@@ -4,6 +4,25 @@ from rest_framework.generics import GenericAPIView
 from .serializers import *
 from rest_framework.views import APIView
 
+
+
+
+class RegionalDirectorRegisterView(APIView):
+    def post(self, request):
+        serializer = RegionalDirectorRegisterSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.save()
+            return Response({
+                "message": "Regional Director registered successfully.",
+                "user_id": user.id,
+                "username": user.username,
+                "email": user.email,
+                "role":user.role
+            }, status=status.HTTP_201_CREATED)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 class PDRegistrationAPIView(GenericAPIView):
     serializer_class = PDRegisterSerializer
 
@@ -26,6 +45,14 @@ class PDRegistrationAPIView(GenericAPIView):
                 }
             }, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
+
+
+
+
 
 
 
