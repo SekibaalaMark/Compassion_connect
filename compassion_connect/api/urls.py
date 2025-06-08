@@ -14,4 +14,5 @@ urlpatterns = [
     path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),  # Login
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),  # Refresh
     path('pd_registration/',PDRegistrationAPIView.as_view(),name="pd_registration"),
+    path('verify-email/', EmailVerifyAPIView.as_view(), name='verify-email'),
 ]

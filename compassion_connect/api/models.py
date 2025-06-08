@@ -55,3 +55,18 @@ class Notification(models.Model):
     message = models.CharField(max_length=255)
     is_read = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
+
+
+
+
+from django.utils import timezone
+from django.conf import settings
+
+class EmailVerificationCode(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    code = models.CharField(max_length=6)
+    created_at = models.DateTimeField(auto_now_add=True)
+    verified = models.BooleanField(default=False)
+
+    def is_expired(self):
+        return (timezone.now() - self.created_at).seconds > 3600  # 1 hour expiry
