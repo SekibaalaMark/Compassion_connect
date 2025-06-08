@@ -16,5 +16,6 @@ class CustomUser(AbstractUser):
     country=models.CharField(max_length=50,null=True,blank=True)
     project_code=models.CharField(max_length=20,null=True,blank=True)
     cluster=models.CharField(max_length=100,null=True,blank=True)
+    
 
 
