@@ -2,6 +2,10 @@ from rest_framework import serializers
 from django.contrib.auth.password_validation import validate_password
 from .models import CustomUser
 
+import random
+from django.core.mail import send_mail
+from .models import EmailVerificationCode
+
 class RegionalDirectorRegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
     password2 = serializers.CharField(write_only=True, required=True, label="Confirm Password")
@@ -61,6 +65,10 @@ class CountryDirectorRegisterSerializer(serializers.ModelSerializer):
             'first_name': {'required': True},
             'last_name': {'required': True},
             'username': {'required': True},
+            "role":{"required":True},
+            "region":{"required":True},
+            "country":{"required":True},
+            "gender":{"required":True},
         }
 
     def validate(self, attrs):
@@ -101,6 +109,11 @@ class PFRegisterSerializer(serializers.ModelSerializer):
             'first_name': {'required': True},
             'last_name': {'required': True},
             'username': {'required': True},
+            "cluster":{"required":True},
+            "role":{"required":True},
+            "region":{"required":True},
+            "country":{"required":True},
+            "gender":{"required":True},
         }
 
     def validate(self, attrs):
@@ -166,38 +179,6 @@ class PDRegisterSerializer(serializers.ModelSerializer):
         user = CustomUser(**validated_data)
         user.set_password(password)  # hash the password
         user.save()
-
-
-        # serializers.py
-import random
-from django.core.mail import send_mail
-from .models import EmailVerificationCode
-
-class PDRegisterSerializer(serializers.ModelSerializer):
-    # ... keep your existing fields ...
-
-    def create(self, validated_data):
-        validated_data.pop('password2')
-        password = validated_data.pop('password')
-        user = CustomUser(**validated_data)
-        user.set_password(password)
-        user.save()
-
-        # Generate 6-digit code
-        code = str(random.randint(100000, 999999))
-
-        # Save code
-        EmailVerificationCode.objects.create(user=user, code=code)
-
-        # Send email
-        send_mail(
-            subject='Verify Your Email',
-            message=f'Hello {user.first_name},\n\nYour email verification code is {code}.',
-            from_email='no-reply@example.com',
-            recipient_list=[user.email],
-            fail_silently=False,
-        )
-
         return user
 
 
@@ -218,6 +199,12 @@ class SDRRegisterSerializer(serializers.ModelSerializer):
             'first_name': {'required': True},
             'last_name': {'required': True},
             'username': {'required': True},
+            "cluster":{"required":True},
+            "role":{"required":True},
+            "region":{"required":True},
+            "country":{"required":True},
+            "project_code":{"required":True},
+            "gender":{"required":True},
         }
 
     def validate(self, attrs):
@@ -258,6 +245,12 @@ class HealthRegisterSerializer(serializers.ModelSerializer):
             'first_name': {'required': True},
             'last_name': {'required': True},
             'username': {'required': True},
+            "cluster":{"required":True},
+            "role":{"required":True},
+            "region":{"required":True},
+            "country":{"required":True},
+            "project_code":{"required":True},
+            "gender":{"required":True},
         }
 
     def validate(self, attrs):
@@ -281,7 +274,7 @@ class HealthRegisterSerializer(serializers.ModelSerializer):
     
 
 
-# serializers.py
+
 class EmailVerificationSerializer(serializers.Serializer):
     email = serializers.EmailField()
     code = serializers.CharField(max_length=6)
