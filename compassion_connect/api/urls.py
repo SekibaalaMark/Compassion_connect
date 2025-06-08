@@ -18,5 +18,6 @@ urlpatterns = [
     path('registration/pf/', PFRegisterView.as_view(), name='pf-register'),
     path('registration/pd',PDRegistrationAPIView.as_view(),name="pd_registration"),
     path('registration/sdr/', SDRRegisterView.as_view(), name='sdr-register'),
+    path('registration/health/', HealthRegisterView.as_view(), name='health-register'),
     path('verify-email/', EmailVerifyAPIView.as_view(), name='verify-email'),
 ]
