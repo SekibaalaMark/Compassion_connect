@@ -38,6 +38,24 @@ class CountryDirectorRegisterView(APIView):
             }, status=status.HTTP_201_CREATED)
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+
+class PFRegisterView(APIView):
+    def post(self, request):
+        serializer = PFRegisterSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.save()
+            return Response({
+                "message": "PF registered successfully.",
+                "user_id": user.id,
+                "username": user.username,
+                "email": user.email,
+                "role":user.role
+            }, status=status.HTTP_201_CREATED)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 
