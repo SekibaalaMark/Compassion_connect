@@ -20,4 +20,5 @@ urlpatterns = [
     path('registration/sdr/', SDRRegisterView.as_view(), name='sdr-register'),
     path('registration/health/', HealthRegisterView.as_view(), name='health-register'),
     path('verify-email/', EmailVerifyAPIView.as_view(), name='verify-email'),
+    path('login/', LoginView.as_view(), name='login'),
 ]

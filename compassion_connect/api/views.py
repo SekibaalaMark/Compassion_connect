@@ -130,3 +130,21 @@ class EmailVerifyAPIView(APIView):
         if serializer.is_valid():
             return Response({"message": "Email verified successfully."}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
+class LoginView(APIView):
+    def post(self, request):
+        serializer = LoginSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.validated_data['user']
+            return Response({
+                "message": "successful.",
+                "user_id": user.id,
+                "username": user.username,
+                "role": user.role,
+                "email": user.email,
+                "success":True,
+            })
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
