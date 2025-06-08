@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.password_validation import validate_password
-from .models import CustomUser
+from .models import *
 from django.contrib.auth import authenticate
 
 import random
@@ -327,3 +327,14 @@ class LoginSerializer(serializers.Serializer):
 
         attrs['user'] = user
         return attrs
+
+
+
+class CreatePostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Post
+        fields = ['caption', 'image']  # author is set from context/user
+
+    def create(self, validated_data):
+        user = self.context['request'].user
+        return Post.objects.create(author=user, **validated_data)

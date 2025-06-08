@@ -21,4 +21,5 @@ urlpatterns = [
     path('registration/health/', HealthRegisterView.as_view(), name='health-register'),
     path('verify-email/', EmailVerifyAPIView.as_view(), name='verify-email'),
     path('login/', LoginView.as_view(), name='login'),
+    path('posts/create/', PostCreateAPIView.as_view(), name='post-create'),
 ]

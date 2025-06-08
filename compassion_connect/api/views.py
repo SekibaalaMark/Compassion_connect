@@ -1,8 +1,9 @@
-from rest_framework import status
+from rest_framework import status,permissions
 from rest_framework.response import Response
 from rest_framework.generics import GenericAPIView
 from .serializers import *
 from rest_framework.views import APIView
+from rest_framework_simplejwt.tokens import RefreshToken
 
 
 
@@ -134,17 +135,40 @@ class EmailVerifyAPIView(APIView):
 
 
 
+
+
 class LoginView(APIView):
     def post(self, request):
         serializer = LoginSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.validated_data['user']
+            
+            # Generate JWT tokens for the authenticated user
+            refresh = RefreshToken.for_user(user)
+            access_token = str(refresh.access_token)
+            refresh_token = str(refresh)
+
             return Response({
                 "message": "successful.",
                 "user_id": user.id,
                 "username": user.username,
                 "role": user.role,
                 "email": user.email,
-                "success":True,
+                "access": access_token,
+                "refresh": refresh_token,
+                "success": True,
             })
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
+class PostCreateAPIView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request, format=None):
+        serializer = CreatePostSerializer(data=request.data, context={'request': request})
+        if serializer.is_valid():
+            serializer.save()  # author is set inside serializer's create()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
