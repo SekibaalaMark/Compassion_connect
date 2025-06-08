@@ -22,4 +22,6 @@ urlpatterns = [
     path('verify-email/', EmailVerifyAPIView.as_view(), name='verify-email'),
     path('login/', LoginView.as_view(), name='login'),
     path('posts/create/', PostCreateAPIView.as_view(), name='post-create'),
+    path('comments/create/', CommentCreateAPIView.as_view(), name='comment-create'),
+    path('posts/<int:post_id>/comments/', PostCommentsListAPIView.as_view(), name='post-comments'),
 ]

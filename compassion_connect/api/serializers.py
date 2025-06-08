@@ -338,3 +338,25 @@ class CreatePostSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         user = self.context['request'].user
         return Post.objects.create(author=user, **validated_data)
+
+
+
+
+class CreateCommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = ['post', 'content']  # author and created_at are handled automatically
+
+    def create(self, validated_data):
+        user = self.context['request'].user
+        return Comment.objects.create(author=user, **validated_data)
+
+
+
+
+class CommentListSerializer(serializers.ModelSerializer):
+    author = serializers.CharField(source='author.username', read_only=True)
+
+    class Meta:
+        model = Comment
+        fields = ['id', 'author', 'content', 'created_at']

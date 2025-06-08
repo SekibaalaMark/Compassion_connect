@@ -172,3 +172,32 @@ class PostCreateAPIView(APIView):
             serializer.save()  # author is set inside serializer's create()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
+class CommentCreateAPIView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request, format=None):
+        serializer = CreateCommentSerializer(data=request.data, context={'request': request})
+        if serializer.is_valid():
+            comment = serializer.save()  # author set in serializer
+            return Response({
+                "id": comment.id,
+                "post": comment.post.id,
+                "author": comment.author.username,
+                "content": comment.content,
+                "created_at": comment.created_at
+            }, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
+
+class PostCommentsListAPIView(APIView):
+    def get(self, request, post_id, format=None):
+        comments = Comment.objects.filter(post_id=post_id).order_by('-created_at')
+        serializer = CommentListSerializer(comments, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
