@@ -13,7 +13,8 @@ from rest_framework_simplejwt.views import (
 urlpatterns = [
     path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),  # Login
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),  # Refresh
-    path('pd_registration/',PDRegistrationAPIView.as_view(),name="pd_registration"),
+    path('registration/pd',PDRegistrationAPIView.as_view(),name="pd_registration"),
     path('registration/regional-director/', RegionalDirectorRegisterView.as_view(), name='regional-director-register'),
+    path('registration/country-director/', CountryDirectorRegisterView.as_view(), name='country-director-register'),
     path('verify-email/', EmailVerifyAPIView.as_view(), name='verify-email'),
 ]
