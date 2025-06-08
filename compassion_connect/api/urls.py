@@ -17,5 +17,6 @@ urlpatterns = [
     path('registration/country-director/', CountryDirectorRegisterView.as_view(), name='country-director-register'),
     path('registration/pf/', PFRegisterView.as_view(), name='pf-register'),
     path('registration/pd',PDRegistrationAPIView.as_view(),name="pd_registration"),
+    path('registration/sdr/', SDRRegisterView.as_view(), name='sdr-register'),
     path('verify-email/', EmailVerifyAPIView.as_view(), name='verify-email'),
 ]
