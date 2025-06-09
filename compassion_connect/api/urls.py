@@ -24,4 +24,11 @@ urlpatterns = [
     path('posts/create/', PostCreateAPIView.as_view(), name='post-create'),
     path('comments/create/', CommentCreateAPIView.as_view(), name='comment-create'),
     path('posts/<int:post_id>/comments/', PostCommentsListAPIView.as_view(), name='post-comments'),
+    path('posts/same-role/', PostListByRoleAPIView.as_view(), name='same-role-posts'),
+
+
+    path('posts/same-role/', PostListByRoleAPIView.as_view(), name='same-role-posts'),
+    path('posts/<int:post_id>/like/', LikePostAPIView.as_view(), name='like-post'),
+    path('posts/<int:post_id>/unlike/', UnlikePostAPIView.as_view(), name='unlike-post'),
+    path('comments/create/', CommentCreateAPIView.as_view(), name='comment-create'),
 ]

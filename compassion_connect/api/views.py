@@ -4,8 +4,8 @@ from rest_framework.generics import GenericAPIView
 from .serializers import *
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
-
-
+from .models import *
+from rest_framework.permissions import IsAuthenticated
 
 
 class RegionalDirectorRegisterView(APIView):
@@ -119,12 +119,6 @@ class HealthRegisterView(APIView):
 
 
 
-
-
-
-
-
-
 class EmailVerifyAPIView(APIView):
     def post(self, request):
         serializer = EmailVerificationSerializer(data=request.data)
@@ -201,3 +195,49 @@ class PostCommentsListAPIView(APIView):
         comments = Comment.objects.filter(post_id=post_id).order_by('-created_at')
         serializer = CommentListSerializer(comments, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+
+
+
+
+class PostListByRoleAPIView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request, format=None):
+        user = request.user
+        posts = Post.objects.filter(author__role=user.role).order_by('-created_at')
+        serializer = PostWithCommentsSerializer(posts, many=True)
+        return Response(serializer.data)
+
+
+
+
+
+class LikePostAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, post_id):
+        user = request.user
+        try:
+            post = Post.objects.get(id=post_id)
+            Like.objects.get_or_create(post=post, user=user)
+            return Response({'message': 'Liked'}, status=status.HTTP_200_OK)
+        except Post.DoesNotExist:
+            return Response({'error': 'Post not found'}, status=status.HTTP_404_NOT_FOUND)
+
+
+class UnlikePostAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, post_id):
+        user = request.user
+        try:
+            post = Post.objects.get(id=post_id)
+            like = Like.objects.filter(post=post, user=user)
+            if like.exists():
+                like.delete()
+                return Response({'message': 'Unliked'}, status=status.HTTP_200_OK)
+            return Response({'error': 'You have not liked this post'}, status=status.HTTP_400_BAD_REQUEST)
+        except Post.DoesNotExist:
+            return Response({'error': 'Post not found'}, status=status.HTTP_404_NOT_FOUND)
