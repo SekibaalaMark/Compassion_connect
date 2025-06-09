@@ -241,3 +241,24 @@ class UnlikePostAPIView(APIView):
             return Response({'error': 'You have not liked this post'}, status=status.HTTP_400_BAD_REQUEST)
         except Post.DoesNotExist:
             return Response({'error': 'Post not found'}, status=status.HTTP_404_NOT_FOUND)
+
+
+
+
+from rest_framework.exceptions import NotFound, PermissionDenied
+
+class PostDeleteView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def delete(self, request, pk):
+        try:
+            post = Post.objects.get(pk=pk)
+        except Post.DoesNotExist:
+            raise NotFound("Post not found.")
+
+        # Only allow the author to delete
+        if post.author != request.user:
+            raise PermissionDenied("You can only delete your own posts.")
+
+        post.delete()
+        return Response({"message": "Post deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
